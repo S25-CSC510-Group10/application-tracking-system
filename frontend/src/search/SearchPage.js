@@ -65,8 +65,8 @@ export default class SearchPage extends Component {
           location: this.state.searchLocation
         }));
       },
-      error: () => {
-        window.alert("Error while fetching jobs. Please try again later");
+      error: (error) => {
+        window.alert("Error while fetching jobs. Please try again later\n\n" + error);
         this.setState({
           loading: false,
         });

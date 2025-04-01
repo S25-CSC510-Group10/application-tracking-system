@@ -48,6 +48,8 @@ services:
     ports:
       - 4444:4444
     shm_size: 2g
+    networks:
+      - ats-network
 
 networks:
   ats-network:
