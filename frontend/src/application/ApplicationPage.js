@@ -9,6 +9,9 @@ const ApplicationsList = ({ applicationList, handleCardClick, selectedApplicatio
   const [location, setLocation] = useState();
   const [status, setStatus] = useState();
   const [date, setDate] = useState();
+  const [interviewDate, setInterviewDate] = useState();
+  const [startTime, setStartTime] = useState();
+  const [endTime, setEndTime] = useState();
   const [jobLink, setJobLink] = useState();
   const [isCreate, setIsCreate] = useState();
 
@@ -42,6 +45,9 @@ const ApplicationsList = ({ applicationList, handleCardClick, selectedApplicatio
           setLocation(null);
           setStatus(null);
           setDate(null);
+          setInterviewDate(null);
+          setStartTime(null);
+          setEndTime(null);
           setJobLink(null);
         }}
       >
@@ -69,84 +75,115 @@ const ApplicationsList = ({ applicationList, handleCardClick, selectedApplicatio
                   setLocation(jobListing?.location);
                   setStatus(jobListing?.status);
                   setDate(jobListing?.date);
+                  setInterviewDate(jobListing?.interviewDate);
+                  setStartTime(jobListing?.startTime);
+                  setEndTime(jobListing?.endTime);
                   setJobLink(jobListing?.link);
                   setIsCreate(false);
                 }}
               >
                 <Card.Body>
-                  <Row className="align-items-center justify-content-between">
-                    {/* Job Title and Company */}
-                    <Col sm={0}>
-                      <Card.Title style={{ fontSize: "20px", fontWeight: "bold", color: "#34495e", marginBottom: "4px" }}>
-                        {jobListing?.title || "N/A"}
-                      </Card.Title>
-                      <Card.Subtitle style={{ fontSize: "16px", color: "#7f8c8d" }}>
-                        {jobListing?.company || "N/A"}
-                      </Card.Subtitle>
-                    </Col>
-                  </Row>
+                <Row className="align-items-center justify-content-between" style={{ marginTop: "10px" }}>
+                {/* Column 1: Location, Date, and Status */}
+                <Col sm={6}>
+                  {/* Location */}
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    <span role="img" aria-label="location">📍</span>
+                    <strong style={{ marginLeft: "5px" }}>Location:</strong>
+                    <span style={{ marginLeft: "5px" }}>{jobListing?.location || "N/A"}</span>
+                  </div>
 
-                  <Row className="align-items-center justify-content-between" style={{ marginTop: "10px" }}>
-                    {/* Location */}
-                    <Col sm={4}>
-                      <div style={{
-                        display: "flex",
-                        alignItems: "center",
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis"
-                      }}>
-                        <span role="img" aria-label="location">📍</span>
-                        <strong style={{ marginLeft: "5px" }}>Location:</strong>
-                        <span style={{ marginLeft: "5px" }}>{jobListing?.location || "N/A"}</span>
-                      </div>
-                    </Col>
+                  {/* Date */}
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      marginTop: "10px",
+                    }}
+                  >
+                    <span role="img" aria-label="calendar">📅</span>
+                    <strong style={{ marginLeft: "5px" }}>Date:</strong>
+                    <span style={{ marginLeft: "5px" }}>{jobListing?.date || "N/A"}</span>
+                  </div>
 
-                    {/* Date */}
-                    <Col sm={true}>
-                      <div style={{
-                        display: "flex",
-                        alignItems: "center",
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis"
-                      }}>
-                        <span role="img" aria-label="calendar">📅</span>
-                        <strong style={{ marginLeft: "5px" }}>Date:</strong>
-                        <span style={{ marginLeft: "5px" }}>{jobListing?.date || "N/A"}</span>
-                      </div>
-                    </Col>
+                  {/* Status */}
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      marginTop: "10px",
+                    }}
+                  >
+                    <span role="img" aria-label="status">📊</span>
+                    <strong style={{ marginLeft: "5px" }}>Status:</strong>
+                    <span style={{ marginLeft: "5px" }}>{findStatus(jobListing?.status) || "N/A"}</span>
+                  </div>
+                </Col>
 
-                    {/* Status */}
-                    <Col sm={true}>
-                      <div style={{
-                        display: "flex",
-                        alignItems: "center",
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis"
-                      }}>
-                        <span role="img" aria-label="status">📊</span>
-                        <strong style={{ marginLeft: "5px" }}>Status:</strong>
-                        <span style={{ marginLeft: "5px" }}>{findStatus(jobListing?.status) || "N/A"}</span>
-                      </div>
-                    </Col>
+                {/* Column 2: Interview Date, Start Time, and End Time */}
+                <Col sm={6}>
+                  {/* Interview Date */}
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "end",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    <span role="img" aria-label="interview">🎤</span>
+                    <strong style={{ marginLeft: "5px" }}>Interview Date:</strong>
+                    <span style={{ marginLeft: "5px" }}>{jobListing?.interviewDate || "N/A"}</span>
+                  </div>
 
-                    {/* Interview Date */}
-                    <Col sm={true}>
-                      <div style={{
-                        display: "flex",
-                        alignItems: "end",
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis"
-                      }}>
-                        <span role="img" aria-label="interview">🎤</span>
-                        <strong style={{ marginLeft: "5px" }}>Interview Date:</strong>
-                        <span style={{ marginLeft: "5px" }}>{jobListing?.interviewDate || "N/A"}</span>
-                      </div>
-                    </Col>
-                  </Row>
+                  {/* Start Time */}
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "end",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      marginTop: "10px",
+                    }}
+                  >
+                    <span role="img" aria-label="clock">⏰</span>
+                    <strong style={{ marginLeft: "5px" }}>Start Time:</strong>
+                    <span style={{ marginLeft: "5px" }}>{jobListing?.startTime || "N/A"}</span>
+                  </div>
+
+                  {/* End Time */}
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "end",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      marginTop: "10px",
+                    }}
+                  >
+                    <span role="img" aria-label="clock">⏰</span>
+                    <strong style={{ marginLeft: "5px" }}>End Time:</strong>
+                    <span style={{ marginLeft: "5px" }}>{jobListing?.endTime || "N/A"}</span>
+                  </div>
+                </Col>
+              </Row>
                 </Card.Body>
               </Card>
             </Col>
@@ -193,22 +230,89 @@ const ApplicationsList = ({ applicationList, handleCardClick, selectedApplicatio
             </select>
           </div>
           {status === '5' && ( // Conditionally render the interview date field
-            <div className='form-group mb-3'>
-              <label className='col-form-label'>Interview Date</label>
-              <input type='date' className='form-control' value={date} onChange={(e) => setDate(e.target.value)} />
-            </div>
+            <>
+              {/* Interview Date */}
+              <div className='form-group mb-3'>
+                <label className='col-form-label'>Interview Date</label>
+                <input
+                  type='date'
+                  className='form-control'
+                  value={interviewDate}
+                  onChange={(e) => setInterviewDate(e.target.value)}
+                />
+              </div>
+          
+              {/* Start Time */}
+              <div className='form-group mb-3'>
+                <label className='col-form-label'>Start Time</label>
+                <input
+                  type='time'
+                  className='form-control'
+                  value={startTime}
+                  onChange={(e) => setStartTime(e.target.value)}
+                />
+              </div>
+          
+              {/* End Time */}
+              <div className='form-group mb-3'>
+                <label className='col-form-label'>End Time</label>
+                <input
+                  type='time'
+                  className='form-control'
+                  value={endTime}
+                  onChange={(e) => setEndTime(e.target.value)}
+                />
+              </div>
+            </>
           )}
         </Modal.Body>
         <Modal.Footer>
           {!isCreate && (
-            <Button variant="danger" onClick={() => { handleDeleteApplication(selectedApplication); setCloseModal(true); }}>
+            <Button
+              variant="danger"
+              onClick={() => {
+                handleDeleteApplication(selectedApplication);
+                setCloseModal(true);
+              }}
+            >
               Delete
             </Button>
           )}
-          <Button variant="success" onClick={() => {
-            handleUpdateDetails(selectedApplication?.id, job, company, location, date, status, jobLink);
-            setCloseModal(true);
-          }}>
+          {status === '5' && interviewDate && startTime && endTime && (
+            <Button
+              variant="primary"
+              onClick={() => {
+                const eventTitle = encodeURIComponent(`${job + "Interview" || 'Interview'} at ${company || 'N/A'}`); // Include job title and company name
+                const eventLocation = encodeURIComponent(location || '');
+                const eventDetails = encodeURIComponent(`Interview with ${company || 'N/A'}`);
+                const startDateTime = new Date(`${interviewDate}T${startTime}`).toISOString().replace(/-|:|\.\d+/g, ''); // Format: YYYYMMDDTHHMMSSZ
+                const endDateTime = new Date(`${interviewDate}T${endTime}`).toISOString().replace(/-|:|\.\d+/g, ''); // Format: YYYYMMDDTHHMMSSZ
+            
+                const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${eventTitle}&dates=${startDateTime}/${endDateTime}&details=${eventDetails}&location=${eventLocation}`;
+                window.open(googleCalendarUrl, '_blank');
+              }}
+            >
+              Export to Google Calendar
+            </Button>
+          )}
+          <Button
+            variant="success"
+            onClick={() => {
+              handleUpdateDetails(
+                selectedApplication?.id,
+                job,
+                company,
+                location,
+                date,
+                status,
+                jobLink,
+                interviewDate,
+                startTime,
+                endTime
+              );
+              setCloseModal(true);
+            }}
+          >
             Save Changes
           </Button>
         </Modal.Footer>
@@ -233,24 +337,32 @@ const ApplicationPage = () => {
         method: 'GET',
       })
         .then((response) => response.json())
-        .then((data) => setApplicationList(data));
+        .then((data) => {
+          setApplicationList(data);
+          setISChanged(false); // Reset the flag after fetching
+        })
+        .catch(() => alert('Error while fetching applications!'));
     }
   }, [isChanged]);
 
   const handleCardClick = (jobListing) => setSelectedApplication(jobListing);
 
-  const handleUpdateDetails = useCallback((id, job, company, location, date, status, jobLink) => {
+  const handleUpdateDetails = useCallback((id, job, company, location, date, status, jobLink, interviewDate, startTime, endTime) => {
     let application = { id: id || null, title: job, company: company, location, date, status, jobLink };
-
+  
     if (status === '5') {
-      application.interviewDate = date;
+      application.interviewDate = interviewDate;
+      application.startTime = startTime;
+      application.endTime = endTime;
     } else {
       application.interviewDate = null;
+      application.startTime = null;
+      application.endTime = null;
     }
-
+  
     const url = id ? `http://127.0.0.1:5000/applications/${id}` : 'http://127.0.0.1:5000/applications';
     const method = id ? 'PUT' : 'POST';
-
+  
     fetch(url, {
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token'),
@@ -259,17 +371,20 @@ const ApplicationPage = () => {
         'Content-Type': 'application/json',
       },
       method,
-      body: JSON.stringify({ application })
+      body: JSON.stringify({ application }),
     })
       .then((response) => response.json())
       .then((data) => {
         if (!id) application.id = data.id;
-        setApplicationList((prev) => id ? prev.map(app => app.id === id ? application : app) : [...prev, application]);
+        setApplicationList((prev) =>
+          id ? prev.map((app) => (app.id === id ? application : app)) : [...prev, application]
+        );
       })
       .catch((error) => alert(id ? 'Update Failed!' : 'Adding application failed!'));
   }, []);
 
   const handleDeleteApplication = (application) => {
+    console.log('Deleting application with ID:', application?.id); // Debugging log
     fetch(`http://127.0.0.1:5000/applications/${application?.id}`, {
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('token'),
@@ -279,11 +394,19 @@ const ApplicationPage = () => {
       },
       method: 'DELETE',
     })
-      .then(() => setISChanged(true))
-      .catch(() => alert('Error while deleting the application!'));
-
-    setISChanged(false);
-    setSelectedApplication(null);
+      .then((response) => {
+        if (response.ok) {
+          setApplicationList((prev) => prev.filter((app) => app.id !== application.id));
+          setSelectedApplication(null);
+          setISChanged(true);
+        } else {
+          throw new Error('Failed to delete application');
+        }
+      })
+      .catch((error) => {
+        console.error('Error while deleting application:', error); // Log the error for debugging
+        alert('Error while deleting the application!');
+      });
   };
 
   return <ApplicationsList
