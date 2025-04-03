@@ -111,20 +111,15 @@ def delete_application(application_id):
         userid = get_userid_from_header()
         user = Users.objects(id=userid).first()
         current_applications = user["applications"]
-
         application_deleted_flag = False
-        updated_applications = []
         app_to_delete = None
-        for application in current_applications:
-            if application["id"] != application_id and application["externalId"] != application_id:
-                updated_applications += [application]
-            else:
-                app_to_delete = application
-                application_deleted_flag = True
+        application_id = int(application_id)
 
-        if not application_deleted_flag:
-            return jsonify({"error": "Application not found"}), 400
-        user.update(applications=updated_applications)
+        updated_applications = [
+            app for app in current_applications if app["id"] != application_id
+        ]
+
+        user.update(set__applications=updated_applications)
         return jsonify(app_to_delete), 200
     except:
         return jsonify({"error": "Internal server error"}), 500
