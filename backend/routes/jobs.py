@@ -19,6 +19,13 @@ from selenium.webdriver.common.by import By
 jobs_bp = Blueprint("jobs", __name__)
 
 
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from fake_useragent import UserAgent
+
 def scrape_careerbuilder_jobs(keywords: str, company: str, location: str):
     # Generate a random User-Agent to evade bot detection
     ua = UserAgent()
@@ -34,33 +41,56 @@ def scrape_careerbuilder_jobs(keywords: str, company: str, location: str):
     results = []
 
     print("Starting Chrome WebDriver...")
-    with webdriver.Remote(config["SELENIUM_URL"] + ":4444/wd/hub", options=options) as driver:
-
-        wait = WebDriverWait(driver, 3)
+    with webdriver.Remote(config["SELENIUM_URL"] + "/wd/hub", options=options) as driver:
+        wait = WebDriverWait(driver, 5)
         print("Chrome WebDriver started.")
 
-        driver.get(
-            f"https://www.careerbuilder.com/jobs?&company_name={company}&keywords={keywords}&location={location.replace(' ', '+')}"
+        url = f"https://www.careerbuilder.com/jobs?company_request=false&company_name=&company_id=&keywords={keywords}+{company}&location={location.replace(' ', '+')}"
+        print(f"URL: {url}")
+
+        driver.get(url)
+
+        print("Retrieving job listings...")
+        job_listings = wait.until(
+            EC.presence_of_all_elements_located((By.CSS_SELECTOR, "li.data-results-content-parent"))
         )
-        # job_listings = wait.until(
-        #     EC.presence_of_all_elements_located(
-        #         (By.CSS_SELECTOR, "li.data-results-content-parent")
-        #     )
-        # )
-        job_listings = driver.find_elements(By.CSS_SELECTOR, "li.data-results-content-parent")
+
+        print(f"Found {len(job_listings)} jobs.")
 
         for job in job_listings:
-            title = job.find_element(By.CSS_SELECTOR, "div.data-results-title").text
-            details = job.find_element(By.CSS_SELECTOR, "div.data-details")
-            company = details.find_element(By.CSS_SELECTOR, "span:nth-child(1)").text
-            location = details.find_element(By.CSS_SELECTOR, "span:nth-child(2)").text
-            job_type = details.find_element(By.CSS_SELECTOR, "span:nth-child(3)").text
-            link = job.find_element(
-                By.CSS_SELECTOR, "a.data-results-content"
-            ).get_attribute("href")
-            results.append({"title": title, "company": company, "location": location, "type": job_type, "link": link, "id": link.split("/")[-1]})
-        
+            try:
+                title = job.find_element(By.CSS_SELECTOR, "div.data-results-title").text.strip()
+                
+                # Extract company, location, job type safely
+                details = job.find_element(By.CSS_SELECTOR, "div.data-details")
+                spans = details.find_elements(By.TAG_NAME, "span")
+                
+                company_name = spans[0].text.strip() if len(spans) > 0 else "N/A"
+                job_location = spans[1].text.strip() if len(spans) > 1 else "N/A"
+                job_type = spans[2].text.strip() if len(spans) > 2 else "N/A"
+
+                # Extract job link
+                link_element = job.find_element(By.CSS_SELECTOR, "a.data-results-content")
+                job_link = link_element.get_attribute("href")
+
+                # Extract job ID from URL
+                job_id = job_link.split("/")[-1]
+
+                # Append result
+                results.append({
+                    "title": title,
+                    "company": company_name,
+                    "location": job_location,
+                    "type": job_type,
+                    "link": job_link,
+                    "id": job_id
+                })
+
+            except Exception as e:
+                print(f"Error scraping job: {e}")
+
         return results
+
 
 
 @jobs_bp.route("/search", methods=["GET"])
@@ -78,7 +108,7 @@ def search():
         return scrape_careerbuilder_jobs(keywords, company, location)
     
     except Exception as err:
-        print(err)
+        print(f"THIS IS THE ERROR: {err}")
         return jsonify({"error": "Internal server error"}), 500
     
 

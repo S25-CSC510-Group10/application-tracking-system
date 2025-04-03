@@ -32,7 +32,8 @@ def create_app():
     app.secret_key = config["SECRET_KEY"]
     app.config["MONGODB_SETTINGS"] = {
         "db": "appTracker",
-        "host": f"mongodb+srv://{config['USERNAME']}:{config['PASSWORD']}@{config['CLUSTER_URL']}/",
+        "host": f"mongodb+srv://{config['USERNAME']}:{config['PASSWORD']}@{config['CLUSTER_URL']}/?retryWrites=true&w=majority&appName=csc510-project3/",
+        # "host": f"mongodb+srv://{config['USERNAME']}:{config['PASSWORD']}@csc510-project3.p6lxg.mongodb.net/?retryWrites=true&w=majority&appName=csc510-project3",
     }
 
     db.init_app(app)
