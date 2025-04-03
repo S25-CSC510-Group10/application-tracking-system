@@ -3,6 +3,9 @@ import React, { useState } from 'react';
 import { Modal, ModalBody, ModalFooter, Form } from 'react-bootstrap';
 import ModalHeader from 'react-bootstrap/ModalHeader';
 import { CONSTANTS } from '../data/Constants';
+import Select from 'react-select';
+import universityOptions from '../data/universityOptions';
+
 
 const CustomProfileModal = (props) => {
 	const { profile, setProfile, setModalOpen, updateProfile } = props;
@@ -10,8 +13,17 @@ const CustomProfileModal = (props) => {
 	const [error, setError] = useState(false);
 
 	const handleSave = () => {
+		const emailFormatRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		const phoneNumberRegex = /^[0-9]{10}$/;
+
 		if (data[CONSTANTS.PROFILE.NAME] == '') {
 			setError(true);
+		} else if (!emailFormatRegex.test(data[CONSTANTS.PROFILE.EMAIL]))	{
+			setError(true);
+			alert('Please enter a valid email address.');
+		} else if (!phoneNumberRegex.test(data[CONSTANTS.PROFILE.CONTACT])) {
+			setError(true);
+			alert('Please enter a valid 10-digit phone number with no spaces.');
 		} else {
 			axios
 				.post(
@@ -72,16 +84,19 @@ const CustomProfileModal = (props) => {
 					</Form.Group>
 					<Form.Group className='my-3'>
 						<Form.Label>University</Form.Label>
-						<Form.Control
-							type='text'
-							placeholder='Enter university'
-							value={data[CONSTANTS.PROFILE.UNIVERSITY]}
-							onChange={(e) =>
+						<Select
+							options={universityOptions}
+							placeholder="Select or type a university"
+							value={universityOptions.find(
+								(option) => option.value === data[CONSTANTS.PROFILE.UNIVERSITY]
+							)} // Set the current value
+							onChange={(selectedOption) =>
 								setData({
 									...data,
-									[CONSTANTS.PROFILE.UNIVERSITY]: e.target.value
+									[CONSTANTS.PROFILE.UNIVERSITY]: selectedOption ? selectedOption.value : ''
 								})
 							}
+							isClearable
 						/>
 					</Form.Group>
 					<Form.Group className='my-3'>
