@@ -81,9 +81,10 @@ export default class ManageResumePage extends Component {
         'Access-Control-Allow-Credentials': 'true'
       },
       success: (message, textStatus, response) => {
+        alert("Resume deleted successfully!");
         this.state.fileNames.splice(resume_idx, 1);
         console.log(response.responseJSON.success);
-        this.getFiles();
+        window.location.reload();
       }
     })
   }
