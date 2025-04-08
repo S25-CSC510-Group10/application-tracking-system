@@ -33,6 +33,26 @@ export default class ManageCoverLettersPage extends Component {
     });
   };
 
+  previewCoverLetter(idx) {
+    $.ajax({
+      url: 'http://127.0.0.1:5000/cover_letters/' + idx,
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer ' + localStorage.getItem('token'),
+        'Access-Control-Allow-Origin': 'http://127.0.0.1:3000',
+        'Access-Control-Allow-Credentials': 'true'
+      },
+      xhrFields: { responseType: 'blob' },
+      credentials: 'include',
+      success: (message, textStatus, response) => {
+        console.log(message)
+        if (message) {
+          window.open(URL.createObjectURL(message), '_blank');
+        }
+      }
+    })
+  }
+
   // Opens the modal to preview a cover letter.
   openCoverLetterModal = (idx) => {
     this.setState({ coverLetterIdx: idx });
@@ -46,7 +66,7 @@ export default class ManageCoverLettersPage extends Component {
   // Deletes a cover letter by its index.
   deleteCoverLetter = (idx) => {
     $.ajax({
-      url: `http://127.0.0.1:5000/cover_letter/${idx}`,
+      url: `http://127.0.0.1:5000/cover_letters/${idx}`,
       method: 'DELETE',
       headers: {
         'Authorization': 'Bearer ' + localStorage.getItem('token'),
@@ -68,21 +88,24 @@ export default class ManageCoverLettersPage extends Component {
       if (event.target.files.length === 0) return;
 
       this.setState({ loading: true });
-      const formData = new FormData();
-      formData.append('file', event.target.files[0]);
+      let formData = new FormData()
+      const file = event.target.files[0];
+      formData.append('file', file);
 
       $.ajax({
-        url: 'http://127.0.0.1:5000/cover_letter',
+        url: 'http://127.0.0.1:5000/cover_letters',
         method: 'POST',
         headers: {
           'Authorization': 'Bearer ' + localStorage.getItem('token'),
         },
         data: formData,
         contentType: false,
+        cache: false,
         processData: false,
-        success: () => {
-          this.getFiles();
-        },
+        success: (msg) => {
+          console.log("Upload successful:", msg)
+          this.setState({ fileNames: [...this.state.fileNames, fileInput.name] })
+        }
       }).always(() => this.setState({ loading: false }));
     });
 
@@ -92,6 +115,12 @@ export default class ManageCoverLettersPage extends Component {
   // Lifecycle method: fetch files when the component mounts.
   componentDidMount() {
     this.getFiles();
+  }
+  
+  componentWillUnmount() {
+    if (this.state.previewUrl) {
+      URL.revokeObjectURL(this.state.previewUrl);
+    }
   }
 
   render() {
@@ -118,7 +147,7 @@ export default class ManageCoverLettersPage extends Component {
               <tr key={index}>
                 <td>{fileName}</td>
                 <td>
-                  <button onClick={() => this.openCoverLetterModal(index)}>Preview</button>
+                  <button onClick={() => this.previewCoverLetter(index)}>Preview</button>
                   <button onClick={() => this.deleteCoverLetter(index)}>Delete</button>
                 </td>
               </tr>
