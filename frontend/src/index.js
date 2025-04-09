@@ -11,36 +11,75 @@ ReactDOM.render(
   document.getElementById('root')
 )
 
-import { initializeApp } from "firebase/app";
+const publicVapidKey = 'BFzhADCx0ap9hQzsZD9qZ_bEKLh9eFZSFmljL5o5HTdY-whZ80yGTBlaKev9warqy58ZRJtWpRreTG9n_e2xg7Y';
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCKdPPK-ah8cNjprjAK-_wfp_qW57oIyq4",
-  authDomain: "j-tracker-d5491.firebaseapp.com",
-  projectId: "j-tracker-d5491",
-  storageBucket: "j-tracker-d5491.firebasestorage.app",
-  messagingSenderId: "335387470365",
-  appId: "1:335387470365:web:c646350173e0b26a1c34f4"
-};
+async function subscribeUser() {
+  if ('serviceWorker' in navigator && 'PushManager' in window) {
+    // register the service worker if necessary
+    await navigator.serviceWorker.register('/service-worker.js');
+    console.log('SW registered if needed.')
 
-const app = initializeApp(firebaseConfig);
+    // wait for the service worker to be ready before subscribing/continuing
+    const swRegistration = await navigator.serviceWorker.ready;
+    console.log('SW ready.')
 
-import { getMessaging, getToken } from "firebase/messaging"
+    // request notification permission if needed
+    const permission = await Notification.requestPermission();
+    if (permission !== 'granted') {
+      alert('Push notification permission denied');
+      return;
+    }
 
-const messaging = getMessaging();
-getToken(messaging, { vapidKey: "BG6xUARVeN2ecAI7VHskkyrfWi3j85Gpr0lRgOHyf1Wq-nrabMD2Nik2kDlkLFE__lZJLPfjGigkV-BDcITMcf8" }).then((currentToken) => {
-  if (currentToken) {
-    console.log('Current tok:', currentToken)
-    // Send the token to your server and update the UI if necessary
-    // ...
-  } else {
-    // Show permission request UI
-    console.log('No registration token available. Request permission to generate one.');
-    // ...
+    // check if the current user is subscribed
+    const response = await fetch('http://localhost:5000/subscribe', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        userid: localStorage.getItem('userId'),
+        Authorization: `Bearer ${localStorage.getItem('userId')}`
+      },
+    })
+
+    if (response.ok) {
+      const data = await response.json();
+      console.log("data:", data)
+
+      if (!data.subscribed) {
+        const subscription = await swRegistration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array(publicVapidKey),
+        });
+        console.log('User not subscribed. Subscription generated.')
+
+        // Send to backend
+        await fetch('http://localhost:5000/subscribe', {
+          method: 'POST',
+          body: JSON.stringify(subscription),
+          headers: {
+            'Content-Type': 'application/json',
+            userid: localStorage.getItem('userId'),
+            Authorization: `Bearer ${localStorage.getItem('userId')}`
+          },
+
+        });
+        console.log('Subscription sent to backend.')
+      }
+    }
   }
-}).catch((err) => {
-  console.log('An error occurred while retrieving token. ', err);
-  // ...
-});
+}
+
+subscribeUser();
+
+// Helper function
+function urlBase64ToUint8Array(base64String) {
+  const padding = '='.repeat((4 - base64String.length % 4) % 4);
+  const base64 = (base64String + padding)
+    .replace(/\-/g, '+')
+    .replace(/_/g, '/');
+  const rawData = atob(base64);
+  return Uint8Array.from([...rawData].map(char => char.charCodeAt(0)));
+}
+
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
