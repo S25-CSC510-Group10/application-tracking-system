@@ -19,7 +19,7 @@ async function subscribeUser() {
     await navigator.serviceWorker.register('/service-worker.js');
     console.log('SW registered if needed.')
 
-    // wait for the service worker to be ready before subscribing/continuing
+    // wait for the service worker to be ready before continuing
     const swRegistration = await navigator.serviceWorker.ready;
     console.log('SW ready.')
 
@@ -30,43 +30,43 @@ async function subscribeUser() {
       return;
     }
 
-    // check if the current user is subscribed
-    const response = await fetch('http://localhost:5000/subscribe', {
-      method: 'GET',
+    // // check if the current user is subscribed
+    // const response = await fetch('http://localhost:5000/subscribe', {
+    //   method: 'GET',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     userid: localStorage.getItem('userId'),
+    //     Authorization: `Bearer ${localStorage.getItem('userId')}`
+    //   },
+    // })
+
+    // if (response.ok) {
+    // const data = await response.json();
+    // console.log("data:", data)
+
+    // if (!data.subscribed) {
+    const subscription = await swRegistration.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(publicVapidKey),
+    });
+    console.log('User not subscribed. Subscription generated.')
+
+    // Send to backend
+    await fetch('http://localhost:5000/subscribe', {
+      method: 'POST',
+      body: JSON.stringify(subscription),
       headers: {
         'Content-Type': 'application/json',
         userid: localStorage.getItem('userId'),
         Authorization: `Bearer ${localStorage.getItem('userId')}`
       },
-    })
 
-    if (response.ok) {
-      const data = await response.json();
-      console.log("data:", data)
-
-      if (!data.subscribed) {
-        const subscription = await swRegistration.pushManager.subscribe({
-          userVisibleOnly: true,
-          applicationServerKey: urlBase64ToUint8Array(publicVapidKey),
-        });
-        console.log('User not subscribed. Subscription generated.')
-
-        // Send to backend
-        await fetch('http://localhost:5000/subscribe', {
-          method: 'POST',
-          body: JSON.stringify(subscription),
-          headers: {
-            'Content-Type': 'application/json',
-            userid: localStorage.getItem('userId'),
-            Authorization: `Bearer ${localStorage.getItem('userId')}`
-          },
-
-        });
-        console.log('Subscription sent to backend.')
-      }
-    }
+    });
+    console.log('Subscription sent to backend.')
   }
 }
+// }
+// }
 
 subscribeUser();
 

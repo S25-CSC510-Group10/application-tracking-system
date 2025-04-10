@@ -7,6 +7,9 @@ import json
 from models import Users
 from utils import get_userid_from_header
 from pywebpush import webpush, WebPushException
+from apscheduler.schedulers.background import BackgroundScheduler
+
+scheduler = BackgroundScheduler()
 
 notifications_bp = Blueprint("notifications", __name__)
 
