@@ -30,7 +30,8 @@
 	"scripts": {
 		"pre-deploy": "npm run build",
 		"deploy": "gh-pages -d build",
-		"start": "set HTTPS=true&&set SSL_CRT_FILE=C:/Windows/System32/cert.crt&&set SSL_KEY_FILE=C:/Windows/System32/cert.key&&craco start",
+		"https-start": "HTTPS=true&&set SSL_CRT_FILE=C:/Windows/System32/cert.crt&&set SSL_KEY_FILE=C:/Windows/System32/cert.key&&craco start",
+		"start": "craco start",
 		"build": "craco build",
 		"test": "craco test",
 		"eject": "react-scripts eject"

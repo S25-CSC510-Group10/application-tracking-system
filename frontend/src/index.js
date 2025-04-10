@@ -30,26 +30,11 @@ async function subscribeUser() {
       return;
     }
 
-    // // check if the current user is subscribed
-    // const response = await fetch('http://localhost:5000/subscribe', {
-    //   method: 'GET',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     userid: localStorage.getItem('userId'),
-    //     Authorization: `Bearer ${localStorage.getItem('userId')}`
-    //   },
-    // })
-
-    // if (response.ok) {
-    // const data = await response.json();
-    // console.log("data:", data)
-
-    // if (!data.subscribed) {
     const subscription = await swRegistration.pushManager.subscribe({
       userVisibleOnly: true,
       applicationServerKey: urlBase64ToUint8Array(publicVapidKey),
     });
-    console.log('User not subscribed. Subscription generated.')
+    console.log('User push subscription generated.')
 
     // Send to backend
     await fetch('http://localhost:5000/subscribe', {
@@ -65,8 +50,6 @@ async function subscribeUser() {
     console.log('Subscription sent to backend.')
   }
 }
-// }
-// }
 
 subscribeUser();
 
@@ -79,7 +62,6 @@ function urlBase64ToUint8Array(base64String) {
   const rawData = atob(base64);
   return Uint8Array.from([...rawData].map(char => char.charCodeAt(0)));
 }
-
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

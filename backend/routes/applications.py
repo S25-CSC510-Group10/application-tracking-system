@@ -54,6 +54,9 @@ def add_application():
             "status": request_data.get("status", "1"),
             "date": datetime.now().strftime("%m/%d/%Y"),
             "externalId": request_data.get("id"),
+            "interviewDate": request_data.get("interviewDate") or None,
+            "startTime": request_data.get("startTime") or None,
+            "endTime": request_data.get("endTime") or None,
         }
         applications = user["applications"] + [current_application]
         user.update(applications=applications)
@@ -77,6 +80,9 @@ def update_application(application_id):
         user = Users.objects(id=userid).first()
         current_applications = user["applications"]
 
+        for item in request_data.items():
+            print(item)
+
         if len(current_applications) == 0:
             return jsonify({"error": "No applications found"}), 400
         else:
@@ -88,6 +94,7 @@ def update_application(application_id):
                     app_to_update = application
                     application_updated_flag = True
                     for key, value in request_data.items():
+                        print(key)
                         application[key] = value
                 updated_applications += [application]
             if not application_updated_flag:
