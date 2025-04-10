@@ -1,0 +1,136 @@
+/* .modal {
+  visibility: hidden;
+  position: absolute;
+  top: 0;
+  left: 20px;
+  border-radius: 9px;
+  box-shadow: 0 0 35px #a6a6a4;
+  padding: 9px;
+  display: block;
+  background-color: #fffcf2;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  justify-items: center;
+}
+
+.modal_heading {
+  font-weight: bold;
+  font: arial, sans-serif;
+  color: #000;
+  margin: 6px;
+  font-size: 150%;
+  padding: 6px;
+}
+.modal_heading:hover {
+  font-weight: bold;
+  font: arial, sans-serif;
+  color: #0e918c;
+  transition: all .7s !important;
+}
+
+.modal_newline {
+  background-color:white;
+  border-top: 2px solid #89beb3;
+  margin: 4px;
+  display: block;
+  color: #89beb3;
+}
+
+.modal_newline:hover {
+  background-color:white;
+  border-top: 4px solid #0e918c;
+  margin: 4px;
+  display: block;
+  color: #0e918c;
+  transition: all .1s !important;
+}
+
+.modal_content {
+  font-family: "Lucida Console", Monaco, monospace;
+  padding: 0px;
+  font-size: 100%;
+  margin: 0px;
+  color: #403d39 !important;
+}
+
+.uc_mc_h{
+  display: none;
+}
+
+#viewAllButton{
+  margin-top: 7px;
+  border-radius: 10px;
+} */
+
+.modal {
+    visibility: hidden;
+    position: fixed;
+    top: 20%;
+    right: 20px;
+    border-radius: 12px; /* Slightly increased border radius for a softer look */
+    box-shadow: 0 0 20px rgba(14, 145, 140, 0.5); /* Subtle box shadow */
+    padding: 20px; /* Increased padding for better spacing */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center content horizontally */
+    background-color: #fefefe; /* Lighter background color */
+    z-index: 1000;
+    border: solid 2px #0e918c;
+  }
+  
+  .modal_heading {
+    font-weight: bold;
+    font-family: Arial, sans-serif; /* Specifying font-family */
+    color: #333; /* Darkened text color for better readability */
+    margin: 10px 0; /* Increased top and bottom margin */
+    font-size: 1.5em; /* Changed percentage to em for scalability */
+    padding: 10px 0; /* Increased padding for better spacing */
+    text-align: center; /* Centering text */
+    transition: color 0.3s ease; /* Smooth color transition on hover */
+  }
+  
+  .modal_heading:hover {
+    color: #0e918c; /* Changed hover color */
+  }
+  
+  .modal_newline {
+    background-color: #fff; /* White background */
+    border-top: 2px solid #ccc; /* Lighter border */
+    margin: 8px 0; /* Increased top and bottom margin */
+    color: #888; /* Lightened text color */
+    transition: all 0.3s ease; /* Smooth transition */
+  }
+  
+  .modal_newline:hover {
+    border-top: 2px solid #0e918c; /* Hover border color */
+    color: #0e918c; /* Hover text color */
+  }
+  
+  .modal_content {
+    font-family: "Arial", sans-serif; /* Updated font */
+    padding: 10px 0; /* Increased padding */
+    font-size: 16px; /* Increased font size */
+    margin: 0; /* Reset margin */
+    color: #403d39; /* Dark text color */
+  }
+  
+  .uc_mc_h {
+    display: none; /* Hiding element */
+  }
+  
+  #viewAllButton {
+    margin-top: 15px; /* Increased top margin */
+    border-radius: 20px; /* Rounded button corners */
+    padding: 10px 20px; /* Increased padding */
+    background-color: #0e918c; /* New button color */
+    color: #fff; /* Button text color */
+    font-size: 16px; /* Font size */
+    border: none; /* Removed border */
+    cursor: pointer; /* Cursor on hover */
+  }
+  
+  #viewAllButton:hover {
+    background-color: #0b6c66; /* Darkened button color on hover */
+  }
+  

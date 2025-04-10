@@ -1,0 +1,45 @@
+{
+    "manifest_version": 3,
+    "name": "J-Tracker Extension",
+    "version": "1.0",
+    "browser_specific_settings": {
+      "gecko": {
+        "id": "your-extension-id@example.com"
+      }
+    },
+    "content_security_policy": {
+      "extension_pages": "script-src 'self'; object-src 'self'; style-src 'self' 'unsafe-inline';"
+    },
+    "description": "Track and manage your job applications directly from your browser.",
+    "action": {
+      "default_icon": {
+        "16": "extension/icons/icon16.png",
+        "48": "extension/icons/icon48.png",
+        "128": "extension/icons/icon128.png"
+      },
+      "default_title": "J-Tracker",
+      "default_popup": "extension/popup.html"
+    },
+    "host_permissions": ["http://127.0.0.1:5000/*"],
+    "permissions": ["storage", "activeTab", "scripting"],
+    "minimum_chrome_version": "88",
+    
+    "background": {
+      "service_worker": "extension/background.js"
+    },
+    "content_scripts": [
+      {
+        "matches": ["<all_urls>"],
+        "js": ["extension/content.js"],
+        "run_at": "document_end",
+        "all_frames": true,
+        "css": ["extension/content_script.css"]
+      }
+    ],
+    
+    "icons": {
+      "16": "extension/icons/icon16.png",
+      "48": "extension/icons/icon48.png",
+      "128": "extension/icons/icon128.png"
+    }
+  }

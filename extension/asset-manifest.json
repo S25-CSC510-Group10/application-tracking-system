@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/application-tracking-system/static/css/main.7f3c23e7.css",
+    "main.js": "/application-tracking-system/static/js/main.36927fcc.js",
+    "static/js/453.75dabde4.chunk.js": "/application-tracking-system/static/js/453.75dabde4.chunk.js",
+    "index.html": "/application-tracking-system/index.html",
+    "main.7f3c23e7.css.map": "/application-tracking-system/static/css/main.7f3c23e7.css.map",
+    "main.36927fcc.js.map": "/application-tracking-system/static/js/main.36927fcc.js.map",
+    "453.75dabde4.chunk.js.map": "/application-tracking-system/static/js/453.75dabde4.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.7f3c23e7.css",
+    "static/js/main.36927fcc.js"
+  ]
+}
