@@ -142,11 +142,11 @@
 
         // Handle fetching data
         fetchButton.addEventListener("click", () => {
-          fetch("http://127.0.0.1:5000/api/getApplications", {
+          fetch("http://127.0.0.1:5000/applications", {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              Authorization: `Bearer ${localStorage.getItem("token")}`, // Include the token for authentication
             },
           })
             .then((response) => response.json())
