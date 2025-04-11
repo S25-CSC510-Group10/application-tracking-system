@@ -1445,3 +1445,180 @@ def test_update_profile_route_invalid_user(client):
     }
     rv = client.post("/updateProfile", headers=header, json=new_data)
     assert rv.status_code == 500
+
+# 51. Test invalid authorization header format
+def test_invalid_authorization_header_format(client):
+    header = {"Authorization": "InvalidFormat"}
+    rv = client.get("/getProfile", headers=header)
+    assert rv.status_code == 500
+    assert json.loads(rv.data)["error"] == "Invalid authorization header format"
+
+# 52. Test missing required fields for application POST
+def test_application_post_missing_fields(client, user):
+    user, header = user
+    rv = client.post(
+        "/applications",
+        headers=header,
+        json={"application": {"jobTitle": "Software Engineer"}},  # Missing fields
+    )
+    assert rv.status_code == 400
+    assert json.loads(rv.data)["error"] == "Missing fields in input"
+
+# 53. Test invalid date format for application POST
+def test_application_post_invalid_date_format(client, user):
+    user, header = user
+    rv = client.post(
+        "/applications",
+        headers=header,
+        json={
+            "application": {
+                "jobTitle": "Software Engineer",
+                "companyName": "TechCorp",
+                "date": "invalid-date",
+                "status": "Applied",
+            }
+        },
+    )
+    assert rv.status_code == 400
+    assert json.loads(rv.data)["error"] == "Missing fields in input"
+
+# 54. Test empty skills section in profile update
+def test_update_profile_empty_skills(client, user):
+    user, header = user
+    new_data = {"skills": []}
+    rv = client.post("/updateProfile", headers=header, json=new_data)
+    assert rv.status_code == 200
+    data = json.loads(rv.data)
+    assert data["skills"] == [{}]
+
+# 55. Test invalid skills format in profile update
+def test_update_profile_invalid_skill_format(client, user):
+    user, header = user
+    new_data = {"skills": "invalid-format"}  # Should be a list
+    rv = client.post("/updateProfile", headers=header, json=new_data)
+    assert rv.status_code == 500
+    assert json.loads(rv.data)["error"] == "Invalid skill format"
+
+# 56. Test emply location in profile update
+def test_update_profile_empty_locations(client, user):
+    user, header = user
+    new_data = {"locations": []}
+    rv = client.post("/updateProfile", headers=header, json=new_data)
+    assert rv.status_code == 200
+    data = json.loads(rv.data)
+    assert data["locations"] == [{}]
+
+# 57. Test invalid location format in profile update
+def test_update_profile_invalid_location_format(client, user):
+    user, header = user
+    new_data = {"locations": "invalid-format"}  # Should be a list
+    rv = client.post("/updateProfile", headers=header, json=new_data)
+    assert rv.status_code == 500
+    assert json.loads(rv.data)["error"] == "Invalid location format"
+
+# 58. Test empty job level in profile update
+def test_update_profile_empty_job_levels(client, user):
+    user, header = user
+    new_data = {"job_levels": []}
+    rv = client.post("/updateProfile", headers=header, json=new_data)
+    assert rv.status_code == 200
+    data = json.loads(rv.data)
+    assert data["job_levels"] == [{}]
+
+# 59. Test invalid job level format in profile update
+def test_update_profile_invalid_job_level_format(client, user):
+    user, header = user
+    new_data = {"job_levels": "invalid-format"}  # Should be a list
+    rv = client.post("/updateProfile", headers=header, json=new_data)
+    assert rv.status_code == 500
+    assert json.loads(rv.data)["error"] == "Invalid job level format"
+
+# 60. Test invalid resume file type
+def test_resume_invalid_file_type(client, user):
+    user, header = user
+    data = dict(file=(BytesIO(b"invalid file content"), "resume.exe"))
+    rv = client.post("/resume", headers=header, content_type="multipart/form-data", data=data)
+    assert rv.status_code == 500
+    assert json.loads(rv.data)["error"] == "Unsupported file type"
+
+# 61. Test empty resume file
+def test_resume_empty_file(client, user):
+    user, header = user
+    data = dict(file=(BytesIO(b""), "resume.pdf"))
+    rv = client.post("/resume", headers=header, content_type="multipart/form-data", data=data)
+    assert rv.status_code == 500
+    assert json.loads(rv.data)["error"] == "Empty file"
+
+# 62. Test invalid resume feedback index
+def test_resume_feedback_invalid_index(client, user):
+    user, header = user
+    rv = client.get("/resume-feedback/999", headers=header)  # Non-existent index
+    assert rv.status_code == 400
+    assert json.loads(rv.data)["error"] == "resume feedback not be found"
+
+# 63. Test duplicate applications
+def test_duplicate_application(client, user):
+    user, header = user
+    application = {
+        "jobTitle": "Software Engineer",
+        "companyName": "TechCorp",
+        "date": str(datetime.date(2023, 1, 1)),
+        "status": "Applied",
+    }
+    rv = client.post("/applications", headers=header, json={"application": application})
+    assert rv.status_code == 200
+
+    # Try adding the same application again
+    rv = client.post("/applications", headers=header, json={"application": application})
+    assert rv.status_code == 409  # Assuming 409 is returned for duplicates
+
+# 64. Test invalid search query
+def test_search_invalid_query(client):
+    rv = client.get("/search?invalid_param=value")
+    assert rv.status_code == 500
+    assert json.loads(rv.data)["error"] == "Invalid query parameters"
+
+# 65. Test empty search results
+def test_search_empty_results(client, mocker):
+    mocker.patch("routes.jobs.scrape_careerbuilder_jobs", return_value=[])
+    rv = client.get("/search?keywords=nonexistent")
+    assert rv.status_code == 500
+    data = json.loads(rv.data)
+    assert len(data) == 0
+
+# 66. Test invalid profile update field
+def test_update_profile_invalid_field(client, user):
+    user, header = user
+    new_data = {"invalidField": "value"}
+    rv = client.post("/updateProfile", headers=header, json=new_data)
+    assert rv.status_code == 500
+    assert json.loads(rv.data)["error"] == "Invalid field"
+
+# 67. Test invalid resume feedback deletion
+def test_resume_feedback_delete_invalid_index(client, user):
+    user, header = user
+    rv = client.delete("/resume-feedback/999", headers=header)  # Non-existent index
+    assert rv.status_code == 405
+    assert json.loads(rv.data)["error"] == "Invalid index"
+
+# 68. Test empty profile update
+def test_update_profile_empty_payload(client, user):
+    user, header = user
+    rv = client.post("/updateProfile", headers=header, json={})
+    assert rv.status_code == 200
+    data = json.loads(rv.data)
+    assert data["fullName"] == user.fullName  # Ensure no changes were made
+
+# 69. Test invalid resume feedback retrieval
+def test_resume_feedback_negative_index(client, user):
+    user, header = user
+    rv = client.get("/resume-feedback/-1", headers=header)
+    assert rv.status_code == 404
+    assert json.loads(rv.data)["error"] == "Invalid index"
+
+# 70. Test invalid resume deletion
+def test_resume_delete_invalid_index(client, user):
+    user, header = user
+    rv = client.delete("/resume/999", headers=header)  # Non-existent index
+    assert rv.status_code == 400
+    assert json.loads(rv.data)["error"] == "Invalid index"
