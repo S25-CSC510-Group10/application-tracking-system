@@ -13,6 +13,7 @@ class Users(db.Document):
     authTokens = db.ListField()
     email = db.StringField()
     applications = db.ListField()
+    covers = db.ListField(db.FileField())
     resumes = db.ListField(db.FileField())
     resumeFeedbacks = db.ListField()
     skills = db.ListField()

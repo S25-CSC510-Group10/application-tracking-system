@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { Modal } from 'react-bootstrap'
 import $ from 'jquery'
 import '../static/resume.css'
 import CoverLetter from '../Modals/CoverLetter'
@@ -29,7 +28,7 @@ export default class ManageResumePage extends Component {
       success: (message, textStatus, response) => {
         console.log(message)
         this.setState({
-          fileNames: message.filenames,
+          fileNames: message.filenames || []
         })
       }
     })
@@ -81,6 +80,7 @@ export default class ManageResumePage extends Component {
         'Access-Control-Allow-Credentials': 'true'
       },
       success: (message, textStatus, response) => {
+        alert("Resume deleted successfully!");
         this.state.fileNames.splice(resume_idx, 1);
         console.log(response.responseJSON.success);
         this.getFiles();
@@ -96,7 +96,7 @@ export default class ManageResumePage extends Component {
     fileInput.accept = ".pdf"; // Adjust allowed file types if needed
 
     fileInput.addEventListener("change", (event) => {
-      if (event.target.files.length == 0) {
+      if (event.target.files.length === 0) {
         return;
       }
 

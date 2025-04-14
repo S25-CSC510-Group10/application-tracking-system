@@ -15,6 +15,7 @@ from routes.applications import applications_bp
 from routes.resume import resume_bp
 from routes.jobs import jobs_bp
 from routes.notifications import notifications_bp
+from routes.covers import cover_bp
 
 
 def create_app():
@@ -47,6 +48,8 @@ def create_app():
     app.register_blueprint(profile_bp)
     app.register_blueprint(applications_bp)
     app.register_blueprint(resume_bp)
+    app.register_blueprint(cover_bp)
+
     app.register_blueprint(jobs_bp)
     app.register_blueprint(notifications_bp)
 

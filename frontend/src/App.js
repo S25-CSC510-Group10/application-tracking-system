@@ -9,6 +9,7 @@ import ManageResumePage from './resume/ManageResumePage';
 import ProfilePage from './profile/ProfilePage';
 import axios from 'axios';
 import MatchesPage from './matches/MatchesPage';
+import ManageCoverLettersPage from './covers/ManageCoverLettersPage';
 
 export default class App extends React.Component {
 	constructor(props) {
@@ -18,6 +19,7 @@ export default class App extends React.Component {
 			ApplicationPage: <ApplicationPage />,
 			LoginPage: <LoginPage />,
 			ManageResumePage: <ManageResumePage />,
+			ManageCoverLettersPage: <ManageCoverLettersPage />,
 			ProfilePage: <ProfilePage />,
 			MatchesPage: <MatchesPage />
 		};

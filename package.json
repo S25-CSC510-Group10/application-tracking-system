@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "react-router-dom": "^7.5.0"
     "react-places-autocomplete": "^7.3.0",
     "react-select": "^5.10.1"
   }
