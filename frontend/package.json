@@ -2,8 +2,9 @@
 	"name": "frontend",
 	"version": "0.1.0",
 	"private": false,
-	"homepage": "https://team-glare.github.io/application-tracking-system",
+	"homepage": ".",
 	"dependencies": {
+		"@craco/craco": "^7.1.0",
 		"@fortawesome/fontawesome-free": "^5.12.0",
 		"@fortawesome/fontawesome-svg-core": "^6.4.2",
 		"@fortawesome/free-brands-svg-icons": "^6.4.2",
@@ -16,6 +17,7 @@
 		"axios": "^0.24.0",
 		"bootstrap": "^4.6.0",
 		"d3": "7.0.4",
+		"firebase": "^11.6.0",
 		"jquery": "3.6.0",
 		"react": "^17.0.2",
 		"react-bootstrap": "^1.6.4",
@@ -28,9 +30,10 @@
 	"scripts": {
 		"pre-deploy": "npm run build",
 		"deploy": "gh-pages -d build",
-		"start": "react-scripts start",
-		"build": "react-scripts build",
-		"test": "react-scripts test",
+		"https-start": "HTTPS=true&&set SSL_CRT_FILE=C:/Windows/System32/cert.crt&&set SSL_KEY_FILE=C:/Windows/System32/cert.key&&craco start",
+		"start": "craco start",
+		"build": "craco build",
+		"test": "craco test",
 		"eject": "react-scripts eject"
 	},
 	"eslintConfig": {

@@ -22,6 +22,7 @@ class Users(db.Document):
     institution = db.StringField()
     phone_number = db.StringField()
     address = db.StringField()
+    subscription_info = db.DictField()
 
     def to_json(self):
         return {"id": self.id, "fullName": self.fullName, "username": self.username}

@@ -120,7 +120,7 @@ export default class ManageCoverLettersPage extends Component {
   componentDidMount() {
     this.getFiles();
   }
-  
+
   componentWillUnmount() {
     if (this.state.previewUrl) {
       URL.revokeObjectURL(this.state.previewUrl);
@@ -155,7 +155,7 @@ export default class ManageCoverLettersPage extends Component {
               <tr key={index}>
                 <td>{fileName}</td>
                 <td>
-                  <Button className='btn-custom px-3 py-2 me-2' onClick={() => this.previewCoverLetter()}>Preview</Button>
+                  <Button className='btn-custom px-3 py-2 me-2' onClick={() => this.previewCoverLetter(index)}>Preview</Button>
                   <Button className='btn-danger px-3 py-2' onClick={() => this.deleteCoverLetter(index)}>Delete</Button>
                 </td>
               </tr>
