@@ -24,7 +24,7 @@ def get_resume():
     try:
         user = Users.objects(id=userid).first()
         if not user.resumes:
-            raise FileNotFoundError
+            return []
 
     except:
         return jsonify({"error": "resume could not be found"}), 400

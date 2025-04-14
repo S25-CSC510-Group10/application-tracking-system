@@ -19,7 +19,7 @@ export default class Sidebar extends Component {
     this.setState({ activePage: page });
     this.props.switchPage(page);
   };
-  
+
   render() {
     const { activePage } = this.state;
     return (
@@ -35,9 +35,8 @@ export default class Sidebar extends Component {
             }}
           >
             <i
-              className={`fas fa-search ${
-                activePage === 'SearchPage' ? 'left-nav-icon-active' : 'left-nav-icon'
-              }`}
+              className={`fas fa-search ${activePage === 'SearchPage' ? 'left-nav-icon-active' : 'left-nav-icon'
+                }`}
             ></i>
             <span
               className={
@@ -59,9 +58,8 @@ export default class Sidebar extends Component {
             }}
           >
             <i
-              className={`fas fa-folder ${
-                activePage === 'ManageResumePage' ? 'left-nav-icon-active' : 'left-nav-icon'
-              }`}
+              className={`fas fa-folder ${activePage === 'ManageResumePage' ? 'left-nav-icon-active' : 'left-nav-icon'
+                }`}
             ></i>
             <span
               className={
@@ -74,6 +72,30 @@ export default class Sidebar extends Component {
             </span>
           </div>
 
+          {/* --- Cover Letters --- */}
+          <div
+            className={activePage === 'ManageCoverLettersPage' ? 'nav-item active' : 'nav-item'}
+            onClick={() => {
+              this.props.switchPage('ManageCoverLettersPage');
+              this.setState({ activePage: 'ManageCoverLettersPage' });
+            }}
+          >
+            <i
+              className={`fas fa-envelope-open-text ${activePage === 'ManageCoverLettersPage' ? 'left-nav-icon-active' : 'left-nav-icon'
+                }`}
+            ></i>
+            <span
+              className={
+                activePage === 'ManageCoverLettersPage'
+                  ? 'left-nav-label-active'
+                  : 'left-nav-label'
+              }
+            >
+              Cover Letters
+            </span>
+          </div>
+
+
           {/* --- Matches --- */}
           <div
             className={activePage === 'MatchesPage' ? 'nav-item active' : 'nav-item'}
@@ -83,9 +105,8 @@ export default class Sidebar extends Component {
             }}
           >
             <i
-              className={`fas fa-check-double ${
-                activePage === 'MatchesPage' ? 'left-nav-icon-active' : 'left-nav-icon'
-              }`}
+              className={`fas fa-check-double ${activePage === 'MatchesPage' ? 'left-nav-icon-active' : 'left-nav-icon'
+                }`}
             ></i>
             <span
               className={
@@ -107,9 +128,8 @@ export default class Sidebar extends Component {
             }}
           >
             <i
-              className={`fas fa-file-alt ${
-                activePage === 'ApplicationPage' ? 'left-nav-icon-active' : 'left-nav-icon'
-              }`}
+              className={`fas fa-file-alt ${activePage === 'ApplicationPage' ? 'left-nav-icon-active' : 'left-nav-icon'
+                }`}
             ></i>
             <span
               className={
@@ -131,9 +151,8 @@ export default class Sidebar extends Component {
             }}
           >
             <i
-              className={`fas fa-user-alt ${
-                activePage === 'ProfilePage' ? 'left-nav-icon-active' : 'left-nav-icon'
-              }`}
+              className={`fas fa-user-alt ${activePage === 'ProfilePage' ? 'left-nav-icon-active' : 'left-nav-icon'
+                }`}
             ></i>
             <span
               className={
