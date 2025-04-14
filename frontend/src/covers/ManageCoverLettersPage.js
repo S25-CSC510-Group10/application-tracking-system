@@ -25,10 +25,14 @@ export default class ManageCoverLettersPage extends Component {
       },
       credentials: 'include',
       success: (message, textStatus, response) => {
-        console.log(message)
+        console.log("Fetched cover letters:", message);
+        // Ensure that message.filenames is at least an empty array.
         this.setState({
-          fileNames: message.filenames,
-        })
+          fileNames: message.filenames || [],
+        });
+      },
+      error: (xhr, status, error) => {
+        console.error("Error fetching cover letters:", error);
       }
     });
   };
@@ -104,11 +108,10 @@ export default class ManageCoverLettersPage extends Component {
         processData: false,
         success: (msg) => {
           console.log("Upload successful:", msg)
-          this.setState({ fileNames: [...this.state.fileNames, fileInput.name] })
+          this.setState({ fileNames: [...this.state.fileNames, msg.filename] })
         }
       }).always(() => this.setState({ loading: false }));
     });
-
     fileInput.click();
   };
 
