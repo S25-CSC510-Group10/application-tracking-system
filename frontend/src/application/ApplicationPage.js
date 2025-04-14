@@ -18,6 +18,7 @@ const ApplicationsList = ({ applicationList, handleCardClick, selectedApplicatio
     else if (value === '2') status = '👤 Waiting for referral';
     else if (value === '3') status = '✅ Applied';
     else if (value === '4') status = '❌ Rejected';
+    else if (value === '5') status = '🎤 Interviewing';
     return status || "N/A";
   };
 
@@ -74,9 +75,8 @@ const ApplicationsList = ({ applicationList, handleCardClick, selectedApplicatio
               >
                 <Card.Body>
                   <Row className="align-items-center justify-content-between">
-
-                    {/* Left Side - Job Title & Company */}
-                    <Col sm={3}>
+                    {/* Job Title and Company */}
+                    <Col sm={0}>
                       <Card.Title style={{ fontSize: "20px", fontWeight: "bold", color: "#34495e", marginBottom: "4px" }}>
                         {jobListing?.title || "N/A"}
                       </Card.Title>
@@ -84,72 +84,75 @@ const ApplicationsList = ({ applicationList, handleCardClick, selectedApplicatio
                         {jobListing?.company || "N/A"}
                       </Card.Subtitle>
                     </Col>
+                  </Row>
 
-                    {/* Right Side - Location, Date, Status in One Row */}
-                    <Col sm={9}>
+                  <Row className="align-items-center justify-content-between" style={{ marginTop: "10px" }}>
+                    {/* Location */}
+                    <Col sm={4}>
                       <div style={{
                         display: "flex",
-                        justifyContent: "space-between",
                         alignItems: "center",
-                        width: "100%",
-                        gap: "20px",
-                        flexWrap: "nowrap", // ❌ Prevents wrapping
-                        overflow: "hidden"
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis"
                       }}>
-                        {/* Location */}
-                        <div style={{
-                          display: "flex",
-                          alignItems: "center",
-                          minWidth: "277px",
-                          maxWidth: "277px",
-                          whiteSpace: "nowrap",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis"
-                        }}>
-                          <span role="img" aria-label="location">📍</span>
-                          <strong style={{ marginLeft: "5px" }}>Location:</strong>
-                          <span style={{ marginLeft: "5px" }}>{jobListing?.location || "N/A"}</span>
-                        </div>
-
-                        {/* Date */}
-                        <div style={{
-                          display: "flex",
-                          alignItems: "center",
-                          minWidth: "200px",
-                          maxWidth: "150px",
-                          whiteSpace: "nowrap",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis"
-                        }}>
-                          <span role="img" aria-label="calendar">📅</span>
-                          <strong style={{ marginLeft: "5px" }}>Date:</strong>
-                          <span style={{ marginLeft: "5px" }}>{jobListing?.date || "N/A"}</span>
-                        </div>
-
-                        {/* Status */}
-                        <div style={{
-                          display: "flex",
-                          alignItems: "center",
-                          minWidth: "290px",
-                          maxWidth: "290px",
-                          whiteSpace: "nowrap",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis"
-                        }}>
-                          <span role="img" aria-label="status">📊</span>
-                          <strong style={{ marginLeft: "5px" }}>Status:</strong>
-                          <span style={{ marginLeft: "5px" }}>{findStatus(jobListing?.status) || "N/A"}</span>
-                        </div>
+                        <span role="img" aria-label="location">📍</span>
+                        <strong style={{ marginLeft: "5px" }}>Location:</strong>
+                        <span style={{ marginLeft: "5px" }}>{jobListing?.location || "N/A"}</span>
                       </div>
                     </Col>
 
+                    {/* Date */}
+                    <Col sm={true}>
+                      <div style={{
+                        display: "flex",
+                        alignItems: "center",
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis"
+                      }}>
+                        <span role="img" aria-label="calendar">📅</span>
+                        <strong style={{ marginLeft: "5px" }}>Date:</strong>
+                        <span style={{ marginLeft: "5px" }}>{jobListing?.date || "N/A"}</span>
+                      </div>
+                    </Col>
+
+                    {/* Status */}
+                    <Col sm={true}>
+                      <div style={{
+                        display: "flex",
+                        alignItems: "center",
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis"
+                      }}>
+                        <span role="img" aria-label="status">📊</span>
+                        <strong style={{ marginLeft: "5px" }}>Status:</strong>
+                        <span style={{ marginLeft: "5px" }}>{findStatus(jobListing?.status) || "N/A"}</span>
+                      </div>
+                    </Col>
+
+                    {/* Interview Date */}
+                    <Col sm={true}>
+                      <div style={{
+                        display: "flex",
+                        alignItems: "end",
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis"
+                      }}>
+                        <span role="img" aria-label="interview">🎤</span>
+                        <strong style={{ marginLeft: "5px" }}>Interview Date:</strong>
+                        <span style={{ marginLeft: "5px" }}>{jobListing?.interviewDate || "N/A"}</span>
+                      </div>
+                    </Col>
                   </Row>
                 </Card.Body>
               </Card>
             </Col>
           ))}
         </Row>
-      </Container>
+      </Container >
 
       <Modal show={!closeModal} onHide={() => setCloseModal(true)}>
         <Modal.Header closeButton>
@@ -186,8 +189,15 @@ const ApplicationsList = ({ applicationList, handleCardClick, selectedApplicatio
               <option value='2'>Waiting Referral</option>
               <option value='3'>Applied</option>
               <option value='4'>Rejected</option>
+              <option value='5'>Interviewing</option>
             </select>
           </div>
+          {status === '5' && ( // Conditionally render the interview date field
+            <div className='form-group mb-3'>
+              <label className='col-form-label'>Interview Date</label>
+              <input type='date' className='form-control' value={date} onChange={(e) => setDate(e.target.value)} />
+            </div>
+          )}
         </Modal.Body>
         <Modal.Footer>
           {!isCreate && (
@@ -231,6 +241,12 @@ const ApplicationPage = () => {
 
   const handleUpdateDetails = useCallback((id, job, company, location, date, status, jobLink) => {
     let application = { id: id || null, title: job, company: company, location, date, status, jobLink };
+
+    if (status === '5') {
+      application.interviewDate = date;
+    } else {
+      application.interviewDate = null;
+    }
 
     const url = id ? `http://127.0.0.1:5000/applications/${id}` : 'http://127.0.0.1:5000/applications';
     const method = id ? 'PUT' : 'POST';
