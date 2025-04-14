@@ -172,7 +172,7 @@ def save_cover_letter():
 
     # Save PDF file to covers (GridFS)
     # Use FileField().put() to wrap the BytesIO into a proper GridFSProxy.
-    file_field = FileField()
+    file_field = db.GridFSProxy()
     try:
         file_field.put(
             pdf_buffer,
