@@ -8,6 +8,7 @@ from utils import get_userid_from_header
 from config import config
 from fake_useragent import UserAgent
 import random
+from urllib.parse import quote_plus
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -17,7 +18,6 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 
 jobs_bp = Blueprint("jobs", __name__)
-
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -48,7 +48,16 @@ def scrape_careerbuilder_jobs(keywords: str, company: str, location: str):
         wait = WebDriverWait(driver, 5)
         print("Chrome WebDriver started.")
 
-        url = f"https://www.careerbuilder.com/jobs?company_request=false&company_name=&company_id=&keywords={keywords}+{company}&location={location.replace(' ', '+')}"
+        # url = f"https://www.careerbuilder.com/jobs?company_request=false&company_name=&company_id=&keywords={keywords}+{company}&location={location.replace(' ', '+')}"
+
+        keywords_encoded = quote_plus(f"{keywords} {company}")
+        location_encoded = quote_plus(location)
+
+        url = (
+            "https://www.careerbuilder.com/jobs"
+            f"?company_request=false&company_name=&company_id="
+            f"&keywords={keywords_encoded}&location={location_encoded}"
+        )
         print(f"URL for scraping: {url}")
 
         driver.get(url)
@@ -111,12 +120,7 @@ def search():
     :return: JSON object with job results
     """
     try:
-        keywords_temp = request.args.get("keywords").split()
-        keywords = ""
-        for i in range(0, len(keywords_temp)):
-            keywords += str(keywords_temp[i])
-            if i < len(keywords_temp) - 1:
-                keywords += "+"
+        keywords = request.args.get("keywords").split()
         company = request.args.get("company")
         location = request.args.get("location")
 
@@ -148,13 +152,10 @@ def getRecommendations():
 
         keywords = (
             random.choice(skill_sets)
-            + "+"
+            + " "
             + (random.choice(job_levels_sets) if len(job_levels_sets) > 0 else "")
         )
         location = random.choice(locations_set)
-        print(f"skills: {skill_sets}")
-        print(f"job_levels: {job_levels_sets}")
-        print(f"locations: {locations_set}")
 
         return scrape_careerbuilder_jobs(keywords, "", location)
 
