@@ -57,7 +57,9 @@ def add_application():
             "interviewDate": request_data.get("interviewDate") or None,
             "startTime": request_data.get("startTime") or None,
             "endTime": request_data.get("endTime") or None,
+            "sent_notifications": [],
         }
+
         applications = user["applications"] + [current_application]
         user.update(applications=applications)
         return jsonify(current_application), 200
@@ -93,6 +95,7 @@ def update_application(application_id):
                 if application["id"] == application_id:
                     app_to_update = application
                     application_updated_flag = True
+                    application["sent_notifications"] = []
                     for key, value in request_data.items():
                         print(key)
                         application[key] = value

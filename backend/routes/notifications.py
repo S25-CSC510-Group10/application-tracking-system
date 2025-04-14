@@ -1,5 +1,5 @@
 """
-This module contains the routes for managing user profiles.
+This module contains the routes for managing notifications to users.
 """
 
 from flask import Blueprint, jsonify, request
@@ -10,6 +10,7 @@ from pywebpush import webpush, WebPushException
 from apscheduler.schedulers.background import BackgroundScheduler
 from datetime import datetime, timedelta
 import pytz
+import math
 
 notifications_bp = Blueprint("notifications", __name__)
 
@@ -76,7 +77,7 @@ def notify_subscription_info(user_sub_info, title, body):
     )
 
 
-notification_time_format = f"%m/%d @ %H:%M"
+notification_time_format = f"%m/%d @ %I:%M %p"
 interview_date_format = f"%Y-%m-%d %H:%M"
 eastern = pytz.timezone("US/Eastern")
 utc = pytz.timezone("UTC")
@@ -84,32 +85,39 @@ utc = pytz.timezone("UTC")
 
 def scheduled_interview_notification():
     for user in Users.objects():
+        updated_apps = []
         for app in user["applications"]:
-            if app.get("interviewDate", False) and app.get("startTime", False):
-
-                # YYYY-mm-dd HH:MM
-                interview_start = f"{app['interviewDate']} {app['startTime']}"
-
+            if app.get("interviewDate") and app.get("startTime"):
+                interview_start_str = f"{app['interviewDate']} {app['startTime']}"
                 start_time = eastern.localize(
-                    datetime.strptime(interview_start, interview_date_format)
+                    datetime.strptime(interview_start_str, interview_date_format)
                 )
-                notify_start_time = start_time - timedelta(minutes=30)
-                notify_end_time = start_time
                 current_time = datetime.now(eastern)
+                minutes_until_start = math.ceil(
+                    (start_time - current_time).total_seconds() / 60
+                )
 
-                if (
-                    notify_start_time <= current_time
-                    and current_time <= notify_end_time
-                ):
-                    sub_info = user["subscription_info"]
-                    title = f"Upcoming Interview"
-                    body = f"You have an upcoming interview on {start_time.astimezone(eastern).strftime(notification_time_format)}"
-                    notify_subscription_info(sub_info, title, body)
-    return None
+                # Get or initialize the sent_notifications list
+                sent_notifications = app.get("sent_notifications", [])
+                if minutes_until_start in [30, 20, 10, 0]:
+                    if minutes_until_start not in sent_notifications:
+                        sub_info = user["subscription_info"]
+                        title = f"Upcoming Interview"
+                        body = f"You have an interview on {start_time.strftime(notification_time_format)} in {minutes_until_start} minutes!"
+                        notify_subscription_info(sub_info, title, body)
+
+                        # Mark this interval as notified
+                        sent_notifications.append(minutes_until_start)
+                        app["sent_notifications"] = sent_notifications
+
+                updated_apps.append(app)
+
+        # Save updated application states
+        user.update(set__applications=updated_apps)
 
 
 notify_interview_job = scheduler.add_job(
-    scheduled_interview_notification, "interval", minutes=10
+    scheduled_interview_notification, "interval", seconds=3
 )
 
 scheduler.start()
