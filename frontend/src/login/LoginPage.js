@@ -63,7 +63,7 @@ export default class LoginPage extends Component {
 			};
 			if (token) {
 				storeToken(obj);
-				window.location.assign('http://localhost:3000/application-tracking-system'); // changing back to this to avoid leaking data such as access tokens from the url
+				window.location.assign('http://localhost:3000/'); // changing back to this to avoid leaking data such as access tokens from the url
 			}
 		}
 	}
@@ -110,7 +110,7 @@ export default class LoginPage extends Component {
 											this.handleLogin(uname, pwd);
 										}}
 										className='custom-btn px-3 py-2 mx-2'
-										// style={{ marginRight: 10 }}
+									// style={{ marginRight: 10 }}
 									>
 										Login
 									</button>

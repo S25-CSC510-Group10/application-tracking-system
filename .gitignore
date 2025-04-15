@@ -1,6 +1,6 @@
 # Backend configuration file
 backend/application.yml
-
+backend/venv312/
 
 #--------------------------------------JAVA--------------------------------------
 # Compiled class file

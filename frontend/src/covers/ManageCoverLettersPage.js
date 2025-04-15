@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import $ from 'jquery';
 import '../static/resume.css';
 import CoverLetter from '../Modals/CoverLetter';
+import { Button } from 'react-bootstrap';
 
 export default class ManageCoverLettersPage extends Component {
   constructor(props) {
@@ -25,10 +26,14 @@ export default class ManageCoverLettersPage extends Component {
       },
       credentials: 'include',
       success: (message, textStatus, response) => {
-        console.log(message)
+        console.log("Fetched cover letters:", message);
+        // Ensure that message.filenames is at least an empty array.
         this.setState({
-          fileNames: message.filenames,
-        })
+          fileNames: message.filenames || [],
+        });
+      },
+      error: (xhr, status, error) => {
+        console.error("Error fetching cover letters:", error);
       }
     });
   };
@@ -104,11 +109,10 @@ export default class ManageCoverLettersPage extends Component {
         processData: false,
         success: (msg) => {
           console.log("Upload successful:", msg)
-          this.setState({ fileNames: [...this.state.fileNames, fileInput.name] })
+          this.setState({ fileNames: [...this.state.fileNames, msg.filename] })
         }
       }).always(() => this.setState({ loading: false }));
     });
-
     fileInput.click();
   };
 
@@ -116,7 +120,7 @@ export default class ManageCoverLettersPage extends Component {
   componentDidMount() {
     this.getFiles();
   }
-  
+
   componentWillUnmount() {
     if (this.state.previewUrl) {
       URL.revokeObjectURL(this.state.previewUrl);
@@ -130,10 +134,14 @@ export default class ManageCoverLettersPage extends Component {
           id="upload-file-btn"
           onClick={this.uploadCoverLetter}
           disabled={this.state.loading}
+          style={{
+            display: 'block',
+            margin: '0 auto'
+          }}
         >
           {this.state.loading ? 'Uploading...' : 'Upload New'}
         </button>
-
+        <div style={{ margin: '1.5em' }}></div>
         <h2>Uploaded Cover Letters</h2>
         <table>
           <thead>
@@ -147,8 +155,8 @@ export default class ManageCoverLettersPage extends Component {
               <tr key={index}>
                 <td>{fileName}</td>
                 <td>
-                  <button onClick={() => this.previewCoverLetter(index)}>Preview</button>
-                  <button onClick={() => this.deleteCoverLetter(index)}>Delete</button>
+                  <Button className='btn-custom px-3 py-2 me-2' onClick={() => this.previewCoverLetter(index)}>Preview</Button>
+                  <Button className='btn-danger px-3 py-2' onClick={() => this.deleteCoverLetter(index)}>Delete</Button>
                 </td>
               </tr>
             ))}
