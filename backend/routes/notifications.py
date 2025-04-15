@@ -87,37 +87,40 @@ def scheduled_interview_notification():
     for user in Users.objects():
         updated_apps = []
         for app in user["applications"]:
-            if app.get("interviewDate") and app.get("startTime"):
-                interview_start_str = f"{app['interviewDate']} {app['startTime']}"
-                start_time = eastern.localize(
-                    datetime.strptime(interview_start_str, interview_date_format)
-                )
-                current_time = datetime.now(eastern)
-                minutes_until_start = math.ceil(
-                    (start_time - current_time).total_seconds() / 60
-                )
+            try:
+                if app.get("interviewDate") and app.get("startTime"):
+                    interview_start_str = f"{app['interviewDate']} {app['startTime']}"
+                    start_time = eastern.localize(
+                        datetime.strptime(interview_start_str, interview_date_format)
+                    )
+                    current_time = datetime.now(eastern)
+                    minutes_until_start = math.ceil(
+                        (start_time - current_time).total_seconds() / 60
+                    )
 
-                # Get or initialize the sent_notifications list
-                sent_notifications = app.get("sent_notifications", [])
-                if minutes_until_start in [30, 20, 10, 0]:
-                    if minutes_until_start not in sent_notifications:
-                        sub_info = user["subscription_info"]
-                        title = f"Upcoming Interview"
-                        body = f"You have an interview on {start_time.strftime(notification_time_format)} in {minutes_until_start} minutes!"
-                        notify_subscription_info(sub_info, title, body)
+                    # Get or initialize the sent_notifications list
+                    sent_notifications = app.get("sent_notifications", [])
+                    if minutes_until_start in [30, 20, 10, 0]:
+                        if minutes_until_start not in sent_notifications:
+                            sub_info = user["subscription_info"]
+                            title = f"Upcoming Interview"
+                            body = f"You have an interview on {start_time.strftime(notification_time_format)} in {minutes_until_start} minutes!"
+                            notify_subscription_info(sub_info, title, body)
 
-                        # Mark this interval as notified
-                        sent_notifications.append(minutes_until_start)
-                        app["sent_notifications"] = sent_notifications
+                            # Mark this interval as notified
+                            sent_notifications.append(minutes_until_start)
+                            app["sent_notifications"] = sent_notifications
 
-                updated_apps.append(app)
-
+                    updated_apps.append(app)
+            except:
+                # ignore apps with no subscription info
+                print()
         # Save updated application states
         user.update(set__applications=updated_apps)
 
 
 notify_interview_job = scheduler.add_job(
-    scheduled_interview_notification, "interval", seconds=3
+    scheduled_interview_notification, "interval", seconds=5
 )
 
 scheduler.start()
