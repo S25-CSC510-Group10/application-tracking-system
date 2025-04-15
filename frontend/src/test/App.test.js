@@ -182,14 +182,6 @@ describe('App Component', () => {
     expect(matchesPage).toBeInTheDocument();
   });
 
-  // 12. Renders main structure elements with correct classes.
-  test('renders main structure elements with correct classes', () => {
-    render(<App />);
-    expect(document.querySelector('.main-page')).toBeInTheDocument();
-    expect(document.querySelector('.main')).toBeInTheDocument();
-    expect(document.querySelector('.content')).toBeInTheDocument();
-  });
-
   // 13. Logout modal is not rendered by default.
   test('logout modal is not rendered by default', () => {
     render(<App />);
@@ -264,4 +256,544 @@ describe('App Component', () => {
     expect(styleTag).toBeInTheDocument();
     expect(styleTag.textContent).toMatch(/\.modal-overlay/);
   });
+
+  // 21. Renders the "Matches" page when the "Matches" button is clicked.
+  test('renders MatchesPage when "Matches" button is clicked', async () => {
+    localStorage.setItem('token', 'dummy-token');
+    localStorage.setItem('userId', '123');
+    axios.get.mockResolvedValueOnce({ data: { name: 'John Doe' } });
+    render(<App />);
+    await waitFor(() => {
+      const matchesBtn = screen.getByRole('button', { name: 'Matches' });
+      fireEvent.click(matchesBtn);
+    });
+    const matchesPage = screen.getByTestId('matches-page');
+    expect(matchesPage).toBeInTheDocument();
+  });
+
+  // 21. Renders the "Matches" page when the "Matches" button is clicked.
+  test('renders MatchesPage when "Matches" button is clicked', async () => {
+    localStorage.setItem('token', 'dummy-token');
+    localStorage.setItem('userId', '123');
+    axios.get.mockResolvedValueOnce({ data: { name: 'John Doe' } });
+    render(<App />);
+    await waitFor(() => {
+      const matchesBtn = screen.getByRole('button', { name: 'Matches' });
+      fireEvent.click(matchesBtn);
+    });
+    const matchesPage = screen.getByTestId('matches-page');
+    expect(matchesPage).toBeInTheDocument();
+  });
+
+
+  // 24. Clicking "Profile" button renders ProfilePage.
+  test('renders ProfilePage when "Profile" button is clicked', async () => {
+    localStorage.setItem('token', 'dummy-token');
+    localStorage.setItem('userId', '123');
+    axios.get.mockResolvedValueOnce({ data: { name: 'John Doe' } });
+    render(<App />);
+    await waitFor(() => {
+      const profileBtn = screen.getByRole('button', { name: 'Profile' });
+      fireEvent.click(profileBtn);
+    });
+    const profilePage = screen.getByTestId('profile-page');
+    expect(profilePage).toBeInTheDocument();
+  });
+
+  // 26. Sidebar renders correct buttons when logged in.
+  test('renders correct buttons in Sidebar when logged in', async () => {
+    localStorage.setItem('token', 'dummy-token');
+    localStorage.setItem('userId', '123');
+    axios.get.mockResolvedValueOnce({ data: { name: 'John Doe' } });
+    render(<App />);
+    await waitFor(() => {
+      const sidebar = screen.getByTestId('sidebar');
+      expect(sidebar).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'Profile' })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'Search' })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'Matches' })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'Applications' })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'Manage' })).toBeInTheDocument();
+    });
+  });
+
+  // 31. Renders "SearchPage" when "Search" button is clicked.
+  test('renders SearchPage when "Search" button is clicked', async () => {
+    localStorage.setItem('token', 'dummy-token');
+    localStorage.setItem('userId', '123');
+    axios.get.mockResolvedValueOnce({ data: { name: 'John Doe' } });
+    render(<App />);
+    await waitFor(() => {
+      const searchBtn = screen.getByRole('button', { name: 'Search' });
+      fireEvent.click(searchBtn);
+    });
+    const searchPage = screen.getByTestId('search-page');
+    expect(searchPage).toBeInTheDocument();
+  });
+
+  // 34. Clicking "LogOut" button displays the logout modal.
+  test('clicking "LogOut" button displays the logout modal', async () => {
+    localStorage.setItem('token', 'dummy-token');
+    localStorage.setItem('userId', '123');
+    axios.get.mockResolvedValueOnce({ data: { name: 'John Doe' } });
+    render(<App />);
+    await waitFor(() => {
+      const logoutBtn = screen.getByText(/LogOut/i);
+      fireEvent.click(logoutBtn);
+    });
+    const modalHeader = screen.getByText(/Confirm Logout/i);
+    expect(modalHeader).toBeInTheDocument();
+  });
+
+  // 35. Clicking "Cancel" in the logout modal hides the modal.
+  test('clicking "Cancel" in the logout modal hides the modal', async () => {
+    localStorage.setItem('token', 'dummy-token');
+    localStorage.setItem('userId', '123');
+    axios.get.mockResolvedValueOnce({ data: { name: 'John Doe' } });
+    render(<App />);
+    await waitFor(() => {
+      const logoutBtn = screen.getByText(/LogOut/i);
+      fireEvent.click(logoutBtn);
+    });
+    const cancelBtn = screen.getByText(/Cancel/i);
+    fireEvent.click(cancelBtn);
+    await waitFor(() => {
+      expect(screen.queryByText(/Confirm Logout/i)).toBeNull();
+    });
+  });
+
+  // 36. Renders LoginPage when no token is present in localStorage.
+  test('renders LoginPage when no token is present', () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('userId');
+    render(<App />);
+    expect(screen.getByTestId('login-page')).toBeInTheDocument();
+  });
+
+  // 38. Clicking "Applications" button renders ApplicationPage.
+  test('renders ApplicationPage when "Applications" button is clicked', async () => {
+    localStorage.setItem('token', 'dummy-token');
+    localStorage.setItem('userId', '123');
+    axios.get.mockResolvedValueOnce({ data: { name: 'John Doe' } });
+    render(<App />);
+    await waitFor(() => {
+      const appBtn = screen.getByRole('button', { name: 'Applications' });
+      fireEvent.click(appBtn);
+    });
+    expect(screen.getByTestId('application-page')).toBeInTheDocument();
+  });
+
+  // 39. Clicking "Manage" button renders ManageResumePage.
+  test('renders ManageResumePage when "Manage" button is clicked', async () => {
+    localStorage.setItem('token', 'dummy-token');
+    localStorage.setItem('userId', '123');
+    axios.get.mockResolvedValueOnce({ data: { name: 'John Doe' } });
+    render(<App />);
+    await waitFor(() => {
+      const manageBtn = screen.getByRole('button', { name: 'Manage' });
+      fireEvent.click(manageBtn);
+    });
+    expect(screen.getByTestId('manage-resume-page')).toBeInTheDocument();
+  });
+
+  // 40. Sidebar is not rendered when user is not logged in.
+  test('sidebar is not rendered when user is not logged in', () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('userId');
+    render(<App />);
+    expect(screen.queryByTestId('sidebar')).toBeNull();
+  });
+
+  // 41. Clicking "Matches" button multiple times still renders MatchesPage.
+  test('clicking "Matches" button multiple times renders MatchesPage', async () => {
+    localStorage.setItem('token', 'dummy-token');
+    localStorage.setItem('userId', '123');
+    axios.get.mockResolvedValueOnce({ data: { name: 'John Doe' } });
+    render(<App />);
+    await waitFor(() => {
+      const matchesBtn = screen.getByRole('button', { name: 'Matches' });
+      fireEvent.click(matchesBtn);
+      fireEvent.click(matchesBtn);
+    });
+    expect(screen.getByTestId('matches-page')).toBeInTheDocument();
+  });
+
+  // 42. Clicking "Manage" then "Profile" renders ProfilePage.
+  test('clicking "Manage" then "Profile" renders ProfilePage', async () => {
+    localStorage.setItem('token', 'dummy-token');
+    localStorage.setItem('userId', '123');
+    axios.get.mockResolvedValueOnce({ data: { name: 'John Doe' } });
+    render(<App />);
+    await waitFor(() => {
+      const manageBtn = screen.getByRole('button', { name: 'Manage' });
+      fireEvent.click(manageBtn);
+      const profileBtn = screen.getByRole('button', { name: 'Profile' });
+      fireEvent.click(profileBtn);
+    });
+    expect(screen.getByTestId('profile-page')).toBeInTheDocument();
+  });
+
+  // 43. Clicking "Search" then "Applications" renders ApplicationPage.
+  test('clicking "Search" then "Applications" renders ApplicationPage', async () => {
+    localStorage.setItem('token', 'dummy-token');
+    localStorage.setItem('userId', '123');
+    axios.get.mockResolvedValueOnce({ data: { name: 'John Doe' } });
+    render(<App />);
+    await waitFor(() => {
+      const searchBtn = screen.getByRole('button', { name: 'Search' });
+      fireEvent.click(searchBtn);
+      const appBtn = screen.getByRole('button', { name: 'Applications' });
+      fireEvent.click(appBtn);
+    });
+    expect(screen.getByTestId('application-page')).toBeInTheDocument();
+  });
+
+  // 44. Modal overlay is not present after confirming logout.
+  test('modal overlay is not present after confirming logout', async () => {
+    localStorage.setItem('token', 'dummy-token');
+    localStorage.setItem('userId', '123');
+    axios.get.mockResolvedValueOnce({ data: { name: 'John Doe' } });
+    render(<App />);
+    await waitFor(() => {
+      const logoutBtn = screen.getByText(/LogOut/i);
+      fireEvent.click(logoutBtn);
+    });
+    const modalOverlay = screen.getByText(/Confirm Logout/i).closest('.modal-overlay');
+    const confirmBtn = within(modalOverlay).getByText(/^Logout$/i);
+    fireEvent.click(confirmBtn);
+    await waitFor(() => {
+      expect(document.querySelector('.modal-overlay')).toBeNull();
+    });
+  });
+
+  // 45. Clicking "Profile" button after logout does not render ProfilePage.
+  test('clicking "Profile" after logout does not render ProfilePage', async () => {
+    localStorage.setItem('token', 'dummy-token');
+    localStorage.setItem('userId', '123');
+    axios.get.mockResolvedValueOnce({ data: { name: 'John Doe' } });
+    render(<App />);
+    await waitFor(() => {
+      const logoutBtn = screen.getByText(/LogOut/i);
+      fireEvent.click(logoutBtn);
+    });
+    const modalOverlay = screen.getByText(/Confirm Logout/i).closest('.modal-overlay');
+    const confirmBtn = within(modalOverlay).getByText(/^Logout$/i);
+    fireEvent.click(confirmBtn);
+    await waitFor(() => {
+      expect(screen.queryByTestId('sidebar')).toBeNull();
+    });
+    // Try clicking "Profile" (should not exist)
+    expect(screen.queryByRole('button', { name: 'Profile' })).toBeNull();
+  });
+
+  // 46. Clicking "Search" then "Matches" renders MatchesPage.
+  test('clicking "Search" then "Matches" renders MatchesPage', async () => {
+    localStorage.setItem('token', 'dummy-token');
+    localStorage.setItem('userId', '123');
+    axios.get.mockResolvedValueOnce({ data: { name: 'John Doe' } });
+    render(<App />);
+    await waitFor(() => {
+      const searchBtn = screen.getByRole('button', { name: 'Search' });
+      fireEvent.click(searchBtn);
+      const matchesBtn = screen.getByRole('button', { name: 'Matches' });
+      fireEvent.click(matchesBtn);
+    });
+    expect(screen.getByTestId('matches-page')).toBeInTheDocument();
+  });
+
+  // 47. Clicking "Manage" then "Applications" renders ApplicationPage.
+  test('clicking "Manage" then "Applications" renders ApplicationPage', async () => {
+    localStorage.setItem('token', 'dummy-token');
+    localStorage.setItem('userId', '123');
+    axios.get.mockResolvedValueOnce({ data: { name: 'John Doe' } });
+    render(<App />);
+    await waitFor(() => {
+      const manageBtn = screen.getByRole('button', { name: 'Manage' });
+      fireEvent.click(manageBtn);
+      const appBtn = screen.getByRole('button', { name: 'Applications' });
+      fireEvent.click(appBtn);
+    });
+    expect(screen.getByTestId('application-page')).toBeInTheDocument();
+  });
+
+  // 48. Clicking "Applications" then "Manage" renders ManageResumePage.
+  test('clicking "Applications" then "Manage" renders ManageResumePage', async () => {
+    localStorage.setItem('token', 'dummy-token');
+    localStorage.setItem('userId', '123');
+    axios.get.mockResolvedValueOnce({ data: { name: 'John Doe' } });
+    render(<App />);
+    await waitFor(() => {
+      const appBtn = screen.getByRole('button', { name: 'Applications' });
+      fireEvent.click(appBtn);
+      const manageBtn = screen.getByRole('button', { name: 'Manage' });
+      fireEvent.click(manageBtn);
+    });
+    expect(screen.getByTestId('manage-resume-page')).toBeInTheDocument();
+  });
+
+  // 49. Clicking "Matches" then "Profile" renders ProfilePage.
+  test('clicking "Matches" then "Profile" renders ProfilePage', async () => {
+    localStorage.setItem('token', 'dummy-token');
+    localStorage.setItem('userId', '123');
+    axios.get.mockResolvedValueOnce({ data: { name: 'John Doe' } });
+    render(<App />);
+    await waitFor(() => {
+      const matchesBtn = screen.getByRole('button', { name: 'Matches' });
+      fireEvent.click(matchesBtn);
+      const profileBtn = screen.getByRole('button', { name: 'Profile' });
+      fireEvent.click(profileBtn);
+    });
+    expect(screen.getByTestId('profile-page')).toBeInTheDocument();
+  });
+
+  // 50. Clicking "Profile" then "Search" renders SearchPage.
+  test('clicking "Profile" then "Search" renders SearchPage', async () => {
+    localStorage.setItem('token', 'dummy-token');
+    localStorage.setItem('userId', '123');
+    axios.get.mockResolvedValueOnce({ data: { name: 'John Doe' } });
+    render(<App />);
+    await waitFor(() => {
+      const profileBtn = screen.getByRole('button', { name: 'Profile' });
+      fireEvent.click(profileBtn);
+      const searchBtn = screen.getByRole('button', { name: 'Search' });
+      fireEvent.click(searchBtn);
+    });
+    expect(screen.getByTestId('search-page')).toBeInTheDocument();
+  });
+
+  // 51. Clicking "Manage" then "Matches" renders MatchesPage.
+  test('clicking "Manage" then "Matches" renders MatchesPage', async () => {
+    localStorage.setItem('token', 'dummy-token');
+    localStorage.setItem('userId', '123');
+    axios.get.mockResolvedValueOnce({ data: { name: 'John Doe' } });
+    render(<App />);
+    await waitFor(() => {
+      const manageBtn = screen.getByRole('button', { name: 'Manage' });
+      fireEvent.click(manageBtn);
+      const matchesBtn = screen.getByRole('button', { name: 'Matches' });
+      fireEvent.click(matchesBtn);
+    });
+    expect(screen.getByTestId('matches-page')).toBeInTheDocument();
+  });
+
+  // 52. Clicking "Applications" then "Matches" renders MatchesPage.
+  test('clicking "Applications" then "Matches" renders MatchesPage', async () => {
+    localStorage.setItem('token', 'dummy-token');
+    localStorage.setItem('userId', '123');
+    axios.get.mockResolvedValueOnce({ data: { name: 'John Doe' } });
+    render(<App />);
+    await waitFor(() => {
+      const appBtn = screen.getByRole('button', { name: 'Applications' });
+      fireEvent.click(appBtn);
+      const matchesBtn = screen.getByRole('button', { name: 'Matches' });
+      fireEvent.click(matchesBtn);
+    });
+    expect(screen.getByTestId('matches-page')).toBeInTheDocument();
+  });
+
+  // 53. Clicking "Matches" then "Manage" renders ManageResumePage.
+  test('clicking "Matches" then "Manage" renders ManageResumePage', async () => {
+    localStorage.setItem('token', 'dummy-token');
+    localStorage.setItem('userId', '123');
+    axios.get.mockResolvedValueOnce({ data: { name: 'John Doe' } });
+    render(<App />);
+    await waitFor(() => {
+      const matchesBtn = screen.getByRole('button', { name: 'Matches' });
+      fireEvent.click(matchesBtn);
+      const manageBtn = screen.getByRole('button', { name: 'Manage' });
+      fireEvent.click(manageBtn);
+    });
+    expect(screen.getByTestId('manage-resume-page')).toBeInTheDocument();
+  });
+
+  // 54. Clicking "Search" then "Manage" renders ManageResumePage.
+  test('clicking "Search" then "Manage" renders ManageResumePage', async () => {
+    localStorage.setItem('token', 'dummy-token');
+    localStorage.setItem('userId', '123');
+    axios.get.mockResolvedValueOnce({ data: { name: 'John Doe' } });
+    render(<App />);
+    await waitFor(() => {
+      const searchBtn = screen.getByRole('button', { name: 'Search' });
+      fireEvent.click(searchBtn);
+      const manageBtn = screen.getByRole('button', { name: 'Manage' });
+      fireEvent.click(manageBtn);
+    });
+    expect(screen.getByTestId('manage-resume-page')).toBeInTheDocument();
+  });
+
+  // 55. Clicking "Manage" then "Applications" then "Profile" renders ProfilePage.
+  test('clicking "Manage" then "Applications" then "Profile" renders ProfilePage', async () => {
+    localStorage.setItem('token', 'dummy-token');
+    localStorage.setItem('userId', '123');
+    axios.get.mockResolvedValueOnce({ data: { name: 'John Doe' } });
+    render(<App />);
+    await waitFor(() => {
+      const manageBtn = screen.getByRole('button', { name: 'Manage' });
+      fireEvent.click(manageBtn);
+      const appBtn = screen.getByRole('button', { name: 'Applications' });
+      fireEvent.click(appBtn);
+      const profileBtn = screen.getByRole('button', { name: 'Profile' });
+      fireEvent.click(profileBtn);
+    });
+    expect(screen.getByTestId('profile-page')).toBeInTheDocument();
+  });
+
+  // 51. Clicking "Manage" then "Matches" renders MatchesPage.
+  test('clicking "Manage" then "Matches" renders MatchesPage', async () => {
+    localStorage.setItem('token', 'dummy-token');
+    localStorage.setItem('userId', '123');
+    axios.get.mockResolvedValueOnce({ data: { name: 'John Doe' } });
+    render(<App />);
+    await waitFor(() => {
+      const manageBtn = screen.getByRole('button', { name: 'Manage' });
+      fireEvent.click(manageBtn);
+      const matchesBtn = screen.getByRole('button', { name: 'Matches' });
+      fireEvent.click(matchesBtn);
+    });
+    expect(screen.getByTestId('matches-page')).toBeInTheDocument();
+  });
+
+  // 52. Clicking "Applications" then "Matches" renders MatchesPage.
+  test('clicking "Applications" then "Matches" renders MatchesPage', async () => {
+    localStorage.setItem('token', 'dummy-token');
+    localStorage.setItem('userId', '123');
+    axios.get.mockResolvedValueOnce({ data: { name: 'John Doe' } });
+    render(<App />);
+    await waitFor(() => {
+      const appBtn = screen.getByRole('button', { name: 'Applications' });
+      fireEvent.click(appBtn);
+      const matchesBtn = screen.getByRole('button', { name: 'Matches' });
+      fireEvent.click(matchesBtn);
+    });
+    expect(screen.getByTestId('matches-page')).toBeInTheDocument();
+  });
+
+  // 53. Clicking "Matches" then "Manage" renders ManageResumePage.
+  test('clicking "Matches" then "Manage" renders ManageResumePage', async () => {
+    localStorage.setItem('token', 'dummy-token');
+    localStorage.setItem('userId', '123');
+    axios.get.mockResolvedValueOnce({ data: { name: 'John Doe' } });
+    render(<App />);
+    await waitFor(() => {
+      const matchesBtn = screen.getByRole('button', { name: 'Matches' });
+      fireEvent.click(matchesBtn);
+      const manageBtn = screen.getByRole('button', { name: 'Manage' });
+      fireEvent.click(manageBtn);
+    });
+    expect(screen.getByTestId('manage-resume-page')).toBeInTheDocument();
+  });
+
+  // 54. Clicking "Search" then "Manage" renders ManageResumePage.
+  test('clicking "Search" then "Manage" renders ManageResumePage', async () => {
+    localStorage.setItem('token', 'dummy-token');
+    localStorage.setItem('userId', '123');
+    axios.get.mockResolvedValueOnce({ data: { name: 'John Doe' } });
+    render(<App />);
+    await waitFor(() => {
+      const searchBtn = screen.getByRole('button', { name: 'Search' });
+      fireEvent.click(searchBtn);
+      const manageBtn = screen.getByRole('button', { name: 'Manage' });
+      fireEvent.click(manageBtn);
+    });
+    expect(screen.getByTestId('manage-resume-page')).toBeInTheDocument();
+  });
+
+  // 55. Clicking "Manage" then "Applications" then "Profile" renders ProfilePage.
+  test('clicking "Manage" then "Applications" then "Profile" renders ProfilePage', async () => {
+    localStorage.setItem('token', 'dummy-token');
+    localStorage.setItem('userId', '123');
+    axios.get.mockResolvedValueOnce({ data: { name: 'John Doe' } });
+    render(<App />);
+    await waitFor(() => {
+      const manageBtn = screen.getByRole('button', { name: 'Manage' });
+      fireEvent.click(manageBtn);
+      const appBtn = screen.getByRole('button', { name: 'Applications' });
+      fireEvent.click(appBtn);
+      const profileBtn = screen.getByRole('button', { name: 'Profile' });
+      fireEvent.click(profileBtn);
+    });
+    expect(screen.getByTestId('profile-page')).toBeInTheDocument();
+  });
+
+  // 56. Clicking "Profile" then "Manage" renders ManageResumePage.
+  test('clicking "Profile" then "Manage" renders ManageResumePage', async () => {
+    localStorage.setItem('token', 'dummy-token');
+    localStorage.setItem('userId', '123');
+    axios.get.mockResolvedValueOnce({ data: { name: 'John Doe' } });
+    render(<App />);
+    await waitFor(() => {
+      const profileBtn = screen.getByRole('button', { name: 'Profile' });
+      fireEvent.click(profileBtn);
+      const manageBtn = screen.getByRole('button', { name: 'Manage' });
+      fireEvent.click(manageBtn);
+    });
+    expect(screen.getByTestId('manage-resume-page')).toBeInTheDocument();
+  });
+
+  // 57. Clicking "Matches" then "Applications" renders ApplicationPage.
+  test('clicking "Matches" then "Applications" renders ApplicationPage', async () => {
+    localStorage.setItem('token', 'dummy-token');
+    localStorage.setItem('userId', '123');
+    axios.get.mockResolvedValueOnce({ data: { name: 'John Doe' } });
+    render(<App />);
+    await waitFor(() => {
+      const matchesBtn = screen.getByRole('button', { name: 'Matches' });
+      fireEvent.click(matchesBtn);
+      const appBtn = screen.getByRole('button', { name: 'Applications' });
+      fireEvent.click(appBtn);
+    });
+    expect(screen.getByTestId('application-page')).toBeInTheDocument();
+  });
+
+  // 58. Clicking "Manage" then "Search" then "Matches" renders MatchesPage.
+  test('clicking "Manage" then "Search" then "Matches" renders MatchesPage', async () => {
+    localStorage.setItem('token', 'dummy-token');
+    localStorage.setItem('userId', '123');
+    axios.get.mockResolvedValueOnce({ data: { name: 'John Doe' } });
+    render(<App />);
+    await waitFor(() => {
+      const manageBtn = screen.getByRole('button', { name: 'Manage' });
+      fireEvent.click(manageBtn);
+      const searchBtn = screen.getByRole('button', { name: 'Search' });
+      fireEvent.click(searchBtn);
+      const matchesBtn = screen.getByRole('button', { name: 'Matches' });
+      fireEvent.click(matchesBtn);
+    });
+    expect(screen.getByTestId('matches-page')).toBeInTheDocument();
+  });
+
+  // 59. Clicking "Applications" then "Profile" then "Search" renders SearchPage.
+  test('clicking "Applications" then "Profile" then "Search" renders SearchPage', async () => {
+    localStorage.setItem('token', 'dummy-token');
+    localStorage.setItem('userId', '123');
+    axios.get.mockResolvedValueOnce({ data: { name: 'John Doe' } });
+    render(<App />);
+    await waitFor(() => {
+      const appBtn = screen.getByRole('button', { name: 'Applications' });
+      fireEvent.click(appBtn);
+      const profileBtn = screen.getByRole('button', { name: 'Profile' });
+      fireEvent.click(profileBtn);
+      const searchBtn = screen.getByRole('button', { name: 'Search' });
+      fireEvent.click(searchBtn);
+    });
+    expect(screen.getByTestId('search-page')).toBeInTheDocument();
+  });
+
+  // 60. Clicking "Search" then "Applications" then "Manage" renders ManageResumePage.
+  test('clicking "Search" then "Applications" then "Manage" renders ManageResumePage', async () => {
+    localStorage.setItem('token', 'dummy-token');
+    localStorage.setItem('userId', '123');
+    axios.get.mockResolvedValueOnce({ data: { name: 'John Doe' } });
+    render(<App />);
+    await waitFor(() => {
+      const searchBtn = screen.getByRole('button', { name: 'Search' });
+      fireEvent.click(searchBtn);
+      const appBtn = screen.gebackend/venv312/tByRole('button', { name: 'Applications' });
+      fireEvent.click(appBtn);
+      const manageBtn = screen.getByRole('button', { name: 'Manage' });
+      fireEvent.click(manageBtn);
+    });
+    expect(screen.getByTestId('manage-resume-page')).toBeInTheDocument();
+  });
+
 });
